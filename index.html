@@ -40,77 +40,114 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #0a0a0b;
+            background-color: #090909; /* Very dark charcoal / almost black */
             color: #ffffff;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
 
-        /* Abstract Wavy Background */
-        .wavy-bg {
+        /* Developer Grid Background */
+        .dev-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 110vh;
-            background: radial-gradient(circle at 20% 30%, #3a2205 0%, #0a0a0b 50%),
-                        radial-gradient(circle at 80% 80%, #3a2205 0%, #0a0a0b 50%);
+            height: 120vh; /* Covers down past hero to extension preview */
+            background-color: transparent; 
             z-index: -2;
             overflow: hidden;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%);
         }
 
-        .wave-curve {
+        /* Tiny Noise/Grain (Extremely faint) */
+        .noise-overlay {
             position: absolute;
-            width: 150%;
-            left: -25%;
-            top: 30%;
-            height: 800px;
-            background: linear-gradient(135deg, rgba(255,138,0,0.1), rgba(0,0,0,0));
-            border-top: 1px solid rgba(255,138,0,0.3);
-            border-radius: 50% 50% 0 0 / 20% 40% 0 0;
-            transform: rotate(-10deg);
-            z-index: -1;
-            filter: blur(2px);
-        }
-
-        .wave-curve-2 {
-            position: absolute;
-            width: 120%;
-            right: -10%;
-            bottom: -20%;
-            height: 600px;
-            background: linear-gradient(315deg, rgba(255,138,0,0.15), rgba(0,0,0,0));
-            border-top: 2px solid rgba(255,138,0,0.4);
-            border-radius: 50% 40% 0 0 / 30% 50% 0 0;
-            transform: rotate(5deg);
-            z-index: -1;
-        }
-
-        /* 3D Floating Spheres */
-        .sphere {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #FF8A00, #8f4d00);
-            box-shadow: 
-                -10px -10px 30px rgba(0,0,0,0.8) inset,
-                10px 10px 20px rgba(255,138,0,0.4) inset,
-                0 20px 40px rgba(0,0,0,0.5);
-        }
-
-        .sphere::after {
-            content: '';
-            position: absolute;
-            top: -20%; left: -20%;
-            width: 140%; height: 140%;
-            border-radius: 50%;
-            border: 1px solid rgba(255,138,0,0.2);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            z-index: 1;
             pointer-events: none;
-            animation: pulse 4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(1.2); opacity: 0; }
+        /* Subtle Warm Gradient behind Hero */
+        .hero-glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255, 138, 0, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Faint Developer Grid / Perspective */
+        .dev-grid-perspective {
+            position: absolute;
+            bottom: -5%;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(1000px) rotateX(60deg);
+            transform-origin: bottom center;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            z-index: 0;
+        }
+
+        /* Circuit / Code Traces */
+        .trace {
+            position: absolute;
+            border: 1px solid rgba(255, 138, 0, 0.2);
+            z-index: 0;
+            opacity: 0;
+            animation: trace-fade-in 2s ease-out 0.5s forwards;
+        }
+        
+        .trace-1 {
+            top: 15%;
+            left: -5%;
+            width: 25%;
+            height: 120px;
+            border-top: none;
+            border-left: none;
+            border-bottom-right-radius: 12px;
+        }
+
+        .trace-2 {
+            top: 40%;
+            right: -2%;
+            width: 15%;
+            height: 200px;
+            border-bottom: none;
+            border-right: none;
+            border-top-left-radius: 12px;
+        }
+        
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.7) 120%);
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        @keyframes trace-fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
         /* Hover Reveal Feature Card */
@@ -119,14 +156,19 @@
         }
         .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px -10px rgba(255, 138, 0, 0.15);
-            border-color: rgba(255, 138, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        /* Scroll Animations */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .scroll-animate.in-view {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Staggered Animations */
@@ -137,17 +179,16 @@
 </head>
 <body>
 
-    <!-- Dynamic Background -->
-    <div class="wavy-bg">
-        <div class="wave-curve"></div>
-        <div class="wave-curve-2"></div>
-        
-        <!-- 3D Spheres -->
-        <div class="sphere w-32 h-32 top-[20%] left-[10%] animate-float" style="animation-delay: 0s;"></div>
-        <div class="sphere w-48 h-48 top-[40%] right-[15%] animate-float" style="animation-delay: -2s;"></div>
-        <div class="sphere w-24 h-24 bottom-[15%] left-[25%] animate-float" style="animation-delay: -4s;"></div>
-        <div class="sphere w-16 h-16 top-[15%] right-[30%] animate-float opacity-70" style="animation-delay: -1s;"></div>
+    <!-- Developer Grid Background -->
+    <div class="dev-bg">
+        <div class="noise-overlay"></div>
+        <div class="hero-glow"></div>
+        <div class="dev-grid-perspective"></div>
+        <div class="trace trace-1"></div>
+        <div class="trace trace-2"></div>
     </div>
+    <!-- Fixed Vignette Overlay -->
+    <div class="vignette"></div>
 
     <!-- Navigation -->
     <nav class="relative z-50 w-full pt-6 px-4 md:pt-8 md:px-8">
@@ -200,7 +241,7 @@
     <!-- Interactive Dash Demo -->
     <section class="relative z-10 px-6 pb-20 -mt-10">
         <div class="max-w-4xl mx-auto opacity-0 animate-fade-in-up delay-300">
-            <div class="rounded-xl border border-white/10 p-2 bg-white/5 backdrop-blur-md shadow-2xl shadow-primary/20">
+            <div class="rounded-xl border border-white/10 p-2 bg-[#121214] shadow-xl">
                 <img src="./assets/demo-dashboard.png" alt="LeetChaser Dashboard" class="w-full rounded-lg object-cover">
             </div>
         </div>
@@ -211,7 +252,7 @@
         <div class="max-w-7xl mx-auto space-y-32">
             
             <!-- Feature 1 -->
-            <div class="flex flex-col lg:flex-row items-center gap-16 group">
+            <div class="flex flex-col lg:flex-row items-center gap-16 group scroll-animate">
                 <div class="flex-1 space-y-6">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-bold tracking-wider text-xs">
                         <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
@@ -230,7 +271,7 @@
             </div>
 
             <!-- Feature 2 -->
-            <div class="flex flex-col lg:flex-row-reverse items-center gap-16 group">
+            <div class="flex flex-col lg:flex-row-reverse items-center gap-16 group scroll-animate">
                 <div class="flex-1 space-y-6">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 font-bold tracking-wider text-xs">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -249,7 +290,7 @@
             </div>
 
             <!-- Feature 3 -->
-            <div class="flex flex-col lg:flex-row items-center gap-16 group">
+            <div class="flex flex-col lg:flex-row items-center gap-16 group scroll-animate">
                 <div class="flex-1 space-y-6">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold tracking-wider text-xs">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -273,17 +314,14 @@
     <!-- Team Section -->
     <section id="team" class="relative z-10 py-32 px-6 bg-[#0a0a0b] overflow-hidden">
         
-        <!-- Background accents for team section -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl z-[-1]"></div>
-
-        <div class="max-w-7xl mx-auto text-center">
+        <div class="max-w-7xl mx-auto text-center scroll-animate">
             <h2 class="text-4xl font-bold mb-4">Meet the Developers</h2>
             <p class="text-gray-400 mb-16">The minds behind the ultimate LeetCode companion.</p>
             
             <div class="flex flex-col md:flex-row justify-center gap-8">
                 
                 <!-- Shivanshu Sharma -->
-                <div class="glass-panel rounded-2xl p-8 max-w-sm w-full transition-transform hover:-translate-y-2 border border-white/5 hover:border-primary/30">
+                <div class="bg-bgCard rounded-2xl p-8 max-w-sm w-full transition-transform hover:-translate-y-2 border border-white/5 hover:border-white/20 scroll-animate" style="transition-delay: 100ms;">
                     <div class="w-24 h-24 mx-auto rounded-full border-2 border-primary mb-6 overflow-hidden bg-bgCard">
                         <img src="https://github.com/shivanshusharma384.png" alt="Shivanshu Sharma" class="w-full h-full object-cover">
                     </div>
@@ -303,7 +341,7 @@
                 </div>
 
                 <!-- Naman Chawla -->
-                <div class="glass-panel rounded-2xl p-8 max-w-sm w-full transition-transform hover:-translate-y-2 border border-white/5 hover:border-primary/30">
+                <div class="bg-bgCard rounded-2xl p-8 max-w-sm w-full transition-transform hover:-translate-y-2 border border-white/5 hover:border-white/20 scroll-animate" style="transition-delay: 200ms;">
                     <div class="w-24 h-24 mx-auto rounded-full border-2 border-primary mb-6 overflow-hidden bg-bgCard">
                         <img src="https://github.com/namanc1845.png" alt="Naman Chawla" class="w-full h-full object-cover">
                     </div>
@@ -342,5 +380,21 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+            document.querySelectorAll('.scroll-animate').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    </script>
 </body>
 </html>

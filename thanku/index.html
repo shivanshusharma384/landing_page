@@ -34,46 +34,127 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #0a0a0b;
+            background-color: #090909; /* Very dark charcoal / almost black */
             color: #ffffff;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
 
-        /* Abstract Wavy Background */
-        .wavy-bg {
+        /* Developer Grid Background */
+        .dev-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
-            background: radial-gradient(circle at 20% 30%, #3a2205 0%, #0a0a0b 50%),
-                        radial-gradient(circle at 80% 80%, #3a2205 0%, #0a0a0b 50%);
+            height: 100vh; /* Covers viewport */
+            background-color: transparent; 
             z-index: -2;
             overflow: hidden;
         }
 
-        .wave-curve {
+        /* Tiny Noise/Grain (Extremely faint) */
+        .noise-overlay {
             position: absolute;
-            width: 150%;
-            left: -25%;
-            top: 30%;
-            height: 800px;
-            background: linear-gradient(135deg, rgba(255,138,0,0.1), rgba(0,0,0,0));
-            border-top: 1px solid rgba(255,138,0,0.3);
-            border-radius: 50% 50% 0 0 / 20% 40% 0 0;
-            transform: rotate(-10deg);
-            z-index: -1;
-            filter: blur(2px);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Subtle Warm Gradient behind Hero */
+        .hero-glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(ellipse at 50% 30%, rgba(255, 138, 0, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Faint Developer Grid / Perspective */
+        .dev-grid-perspective {
+            position: absolute;
+            bottom: -5%;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(1000px) rotateX(60deg);
+            transform-origin: bottom center;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            z-index: 0;
+        }
+
+        /* Circuit / Code Traces */
+        .trace {
+            position: absolute;
+            border: 1px solid rgba(255, 138, 0, 0.2);
+            z-index: 0;
+            opacity: 0;
+            animation: trace-fade-in 2s ease-out 0.5s forwards;
+        }
+        
+        .trace-1 {
+            top: 15%;
+            left: -5%;
+            width: 25%;
+            height: 120px;
+            border-top: none;
+            border-left: none;
+            border-bottom-right-radius: 12px;
+        }
+
+        .trace-2 {
+            top: 40%;
+            right: -2%;
+            width: 15%;
+            height: 200px;
+            border-bottom: none;
+            border-right: none;
+            border-top-left-radius: 12px;
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.7) 120%);
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        @keyframes trace-fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Dynamic Background -->
-    <div class="wavy-bg">
-        <div class="wave-curve"></div>
+    <!-- Developer Grid Background -->
+    <div class="dev-bg">
+        <div class="noise-overlay"></div>
+        <div class="hero-glow"></div>
+        <div class="dev-grid-perspective"></div>
+        <div class="trace trace-1"></div>
+        <div class="trace trace-2"></div>
     </div>
+    <!-- Fixed Vignette Overlay -->
+    <div class="vignette"></div>
 
     <!-- Navigation -->
     <nav class="relative z-50 w-full pt-8 px-8">
@@ -131,5 +212,33 @@
     <footer class="relative z-10 py-8 px-6 text-center border-t border-white/5">
         <p class="text-sm text-gray-500">© 2026 LeetChaser. Open Source on GitHub.</p>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            var duration = 2000; // 2 seconds
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#FF8A00', '#ffffff', '#FFDD00']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#FF8A00', '#ffffff', '#FFDD00']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        });
+    </script>
 </body>
 </html>
