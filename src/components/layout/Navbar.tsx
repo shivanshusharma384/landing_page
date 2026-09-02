@@ -33,8 +33,7 @@ export default function Navbar() {
               <Coffee className="w-5 h-5" />
             </Button>
           </a>
-          <a href="https://chromewebstore.google.com/detail/iefdfjopkghpcpedjckmeieeebcefgog?utm_source=item-share-whatsapp" target="_blank" rel="noopener noreferrer">
-
+          <a href="https://chromewebstore.google.com/detail/iefdfjopkghpcpedjckmeieeebcefgog?utm_source=item-share-whatsapp">
           <Button className="rounded-full font-bold shadow-[0_0_15px_rgba(255,255,255,0.1)]">
             <Download className="w-4 h-4 mr-2" />
             Get Extension
