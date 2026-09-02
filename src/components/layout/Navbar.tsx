@@ -38,6 +38,7 @@ export default function Navbar() {
             <Download className="w-4 h-4 mr-2" />
             Get Extension
           </Button>
+          </a>
         </div>
       </div>
     </nav>
